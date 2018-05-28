@@ -1,0 +1,11 @@
+<mat-toolbar class="dashboard_header">
+  <div class="dashboard_name">Task manager</div>
+  <div class="nav_menu">
+
+  </div>
+  <div class="dashboard_user_profile">
+    <span class="user_email">{{userEmail}}</span>
+    <a mat-button (click)="logout()" href="">Log out</a>
+  </div>
+</mat-toolbar>
+<router-outlet></router-outlet>

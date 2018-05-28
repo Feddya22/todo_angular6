@@ -1,0 +1,20 @@
+<div class="add_project">
+  <button mat-raised-button (click)="addProjectButtonFn()">+ Add new project</button>
+</div>
+<div class="block_list_of_projects">
+  <mat-card class="add_project_area" *ngIf="addProjectButton">
+    <form class="add_project_form" action="">
+      <label for="projectName">Name of project</label>
+      <input [(ngModel)]="projectName" name="projectName" type="text">
+      <button (click)="addProject(projectName)" class="custom_green_button project_save">Save</button>
+    </form>
+  </mat-card>
+  <ng-container *ngIf="projects">
+    <mat-card class="project_card" *ngFor="let project of projects">
+      <p (click)="openProject(project._id, project.name)">{{project.name}}</p>
+      <div class="project_additional_actions">
+        <button (click)="deleteProject(project._id)">delete</button>
+      </div>
+    </mat-card>
+  </ng-container>
+</div>
