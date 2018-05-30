@@ -6,6 +6,7 @@
     justify-content: space-between;
     align-items: center;
     font-family: Arial, Helvetica, sans-serif;
+    z-index: 99;
 }
 
 .dashboard_name {

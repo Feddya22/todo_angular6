@@ -39,12 +39,8 @@ export class IterationService {
         );
     }
 
-    addIteration(name: string, projectId: string) {
+    addIteration(iteration: object) {
       const options = this.returnHeaders('auth');
-      const iteration = {
-          name: name,
-          idProject: projectId
-      };
       return this.http.post(this.serverUrl + '/', JSON.stringify(iteration), options)
         .pipe(
           map((iterationResponse: Response) => {

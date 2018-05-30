@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, Input } from '@angular/core';
 import { Iterations } from '../_models/iterations.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { IterationService } from './iteration.service';
 import { AuthServices } from '../_shared/auth.service';
+import { AddIterationFormComponent } from '../add-iteration-form/add-iteration-form.component';
 
 @Component({
   selector: 'app-iterations',
@@ -11,16 +12,21 @@ import { AuthServices } from '../_shared/auth.service';
   providers: [
     IterationService,
     AuthServices
-  ]
+  ],
+  encapsulation: ViewEncapsulation.Emulated
 })
 export class IterationsComponent implements OnInit {
 
   public iterations: Iterations[] = [];
   public projectId: string;
+  public sidebarOpened = true;
 
-  public editIterationModal = false;
+  public iterationModal = false;
   public iterationId: string;
   public iterationName: string;
+  public messages: string;
+
+  @ViewChild(AddIterationFormComponent) iterationMW;
 
   constructor(
     private iterService: IterationService,
@@ -38,11 +44,19 @@ export class IterationsComponent implements OnInit {
   // error message implement
   getIterations() {
     this.iterService.getIterations(this.projectId)
-      .subscribe(result => this.iterations = result);
+      .subscribe(result => {
+        this.iterations = result;
+      }, error => this.messages = error);
   }
 
-  addIteration(name: string) {
-    this.iterService.addIteration(name, this.projectId)
+  addIteration(name: string, startDate: Date, endDate: Date) {
+    const iteration = {
+      name: name,
+      startDate: startDate,
+      endDate: endDate,
+      idProject: this.projectId
+    };
+    this.iterService.addIteration(iteration)
       .subscribe(result => console.log(result));
   }
 
@@ -50,7 +64,7 @@ export class IterationsComponent implements OnInit {
     this.iterService.updateIteration(newIterationName, this.iterationId)
       .subscribe(result => {
         console.log(result);
-        this.editIterationModal = false;
+        this.iterationModal = false;
       });
   }
 
@@ -58,14 +72,22 @@ export class IterationsComponent implements OnInit {
     this.router.navigate(['dashboard/project/', this.projectId, 'iteration', iterationId]);
   }
 
-  cancelButton() {
-    this.editIterationModal = false;
+  showButton() {
+    this.iterationModal = true;
   }
 
-  showButton(iterationId: string, iterationName: string) {
-    this.iterationId = iterationId;
-    this.iterationName = iterationName;
-    this.editIterationModal = true;
+  modalWindowsConfirm(isConfirm: boolean) {
+    this.iterationModal = false;
+    if (isConfirm) {
+      this.addIteration(
+        this.iterationMW.nameIteration,
+        this.iterationMW.startDateIter,
+        this.iterationMW.endDateIter
+      );
+      console.log('saved');
+    } else {
+      console.log('discarced');
+    }
   }
 
 }
