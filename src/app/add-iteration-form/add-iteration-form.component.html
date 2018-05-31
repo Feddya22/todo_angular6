@@ -1,17 +1,18 @@
 <div class="overlay">
   <mat-card class="modal_windows">
-    <h3>Add iteration</h3>
+    <h3>{{title}}</h3>
+    <p *ngIf="name && isEdited">Old name: {{name}}</p>
     <form class="iteration_form">
       <mat-form-field class="name_iteration">
         <input matInput [(ngModel)]="nameIteration" name="nameIteration" placeholder="Iteration name">
       </mat-form-field>
       <mat-form-field>
-        <input matInput [(ngModel)]="startDateIter" name="startDateIter" [matDatepicker]="startDate" placeholder="Choose iteration start day">
+        <input matInput [(ngModel)]="startDateIter" name="startDateIter" [matDatepicker]="startDate" placeholder="Iteration start day">
         <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
         <mat-datepicker #startDate></mat-datepicker>
       </mat-form-field>
       <mat-form-field>
-        <input matInput [(ngModel)]="endDateIter" name="endDateIter" [matDatepicker]="endDate" placeholder="Choose iteration end day">
+        <input matInput [(ngModel)]="endDateIter" name="endDateIter" [matDatepicker]="endDate" placeholder="Iteration end day">
         <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
         <mat-datepicker #endDate></mat-datepicker>
       </mat-form-field>

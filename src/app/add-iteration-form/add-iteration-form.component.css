@@ -9,3 +9,11 @@
     bottom: 0;
     background: rgba(51, 49, 49, 0.418);
 }
+
+.mat-raised-button {
+    margin-left: 10px;
+}
+
+.mat-raised-button:first-child {
+    margin-left: 0;
+}

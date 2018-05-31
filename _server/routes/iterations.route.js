@@ -18,7 +18,9 @@ iter.get('/:projectId', checkAuth, (req, res, next) => {
                 iterations: iteratioonsList.map(item => {
                     return {
                         _id: item._id,
-                        name: item.name
+                        name: item.name,
+                        startDate: item.startDate,
+                        endDate: item.endDate
                     }
                 })
             };
@@ -28,13 +30,15 @@ iter.get('/:projectId', checkAuth, (req, res, next) => {
 });
 
 iter.post('/', checkAuth, (req, res, next) => {
-    Iterations.find({name: req.body.name})
+    Iterations.find({name: req.body.name, idProject: req.body.idProject})
         .exec()
         .then(addingIteration => {
             if(!addingIteration.length) {
                 var iteration = new Iterations({
                     _id: new mongo.Types.ObjectId(),
                     name: req.body.name,
+                    startDate: req.body.startDate,
+                    endDate: req.body.endDate,
                     idProject: req.body.idProject
                 });
                 iteration.save()

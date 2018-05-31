@@ -1,23 +1,46 @@
 <div class="iterations_content">
-  <div class="iterations_sidebar">
-    <div class="iteration_list_header">Iterations <button mat-mini-fab (click)="showButton()" >+</button></div>
-    <mat-list *ngIf="iterations">
+  <div *ngIf="sidebarOpened" class="iterations_sidebar">
+    <div class="iteration_list_header">
+      Iterations
+      <div class="buttons_for_add_eddit">
+        <button *ngIf="iterationId" class="edit_iter_button" mat-mini-fab (click)="editIterationModal(iteration)"><mat-icon>edit</mat-icon></button>
+        <button mat-mini-fab (click)="addIterationModal()" ><mat-icon>add</mat-icon></button>
+    </div>
+    </div>
+    <mat-list class="list_of_iterations" *ngIf="iterations">
       <ng-container *ngFor="let iteration of iterations">
-        <mat-list-item (click)="openTasksList(iteration._id)" >{{iteration.name}}</mat-list-item>
+        <mat-list-item class="iteration_list_item" (click)="openTasksList(iteration)" >
+          {{iteration.name}}
+        </mat-list-item>
         <mat-divider></mat-divider>
       </ng-container>
     </mat-list>
   </div>
   <div class="iteration_main_content">
     <div class="buttons_block">
-      <button mat-raised-button><mat-icon class="button_icon_size">home</mat-icon>Iterations</button>
-      <button mat-raised-button>Add task</button>
-      <button mat-raised-button>Backlog</button>
+      <div class="left_side_buttons">
+          <button (click)="togleSidebar()" mat-raised-button><mat-icon class="button_icon_size">menu</mat-icon>Iterations</button>
+          <button mat-raised-button><mat-icon class="button_icon_size">add</mat-icon>Add task</button>
+          <button mat-raised-button>Backlog</button>
+      </div>
+      <div *ngIf="isDate" class="information_about_iteration">
+        <mat-icon class="button_icon_size date_icon">date_range</mat-icon>
+        <span>{{startDateIter | date: 'dd/MM/yyyy'}}</span>
+        <span> - </span>
+        <span>{{endDateIter | date: 'dd/MM/yyyy'}}</span>
+      </div>
     </div>
     <div class="show_iteration_content">
       <router-outlet></router-outlet>
     </div>
   </div>
 </div>
-<app-add-iteration-form *ngIf="iterationModal" (isConfirm)="modalWindowsConfirm($event)" >
+<app-add-iteration-form
+  *ngIf="iterationModal"
+  [name]="iterationName"
+  [startDate]="startDateIter"
+  [endDate]="endDateIter"
+  [title]="title"
+  [isEdited]="isEdited"
+  (isConfirm)="modalWindowsConfirm($event)" >
 </app-add-iteration-form>

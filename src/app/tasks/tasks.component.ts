@@ -49,7 +49,6 @@ export class TasksComponent implements OnInit {
     this.backlog.length = 0;
     this.tasksService.getListOfTasks(this.projectId, this.iterationId)
       .subscribe(result => result.forEach(item => {
-        console.log(item);
         if (item.inBacklog === false) {
           if (item.status === 'todo') {
             this.todo.push(item);

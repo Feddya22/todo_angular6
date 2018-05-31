@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { Iterations } from '../_models/iterations.model';
 import { Router, ActivatedRoute } from '@angular/router';
 import { IterationService } from './iteration.service';
@@ -20,11 +20,18 @@ export class IterationsComponent implements OnInit {
   public iterations: Iterations[] = [];
   public projectId: string;
   public sidebarOpened = true;
+  public messages: string;
 
   public iterationModal = false;
+
   public iterationId: string;
+  public title: string;
   public iterationName: string;
-  public messages: string;
+  public startDateIter: Date;
+  public endDateIter: Date;
+
+  public isEdited: boolean;
+  public isDate: boolean;
 
   @ViewChild(AddIterationFormComponent) iterationMW;
 
@@ -41,7 +48,6 @@ export class IterationsComponent implements OnInit {
     this.getIterations();
   }
 
-  // error message implement
   getIterations() {
     this.iterService.getIterations(this.projectId)
       .subscribe(result => {
@@ -57,9 +63,13 @@ export class IterationsComponent implements OnInit {
       idProject: this.projectId
     };
     this.iterService.addIteration(iteration)
-      .subscribe(result => console.log(result));
+      .subscribe(
+        result => this.iterations.push(result.addedIteration),
+        error => this.messages = error
+      );
   }
 
+  // change incoming data
   updateIteration(newIterationName: string) {
     this.iterService.updateIteration(newIterationName, this.iterationId)
       .subscribe(result => {
@@ -68,12 +78,29 @@ export class IterationsComponent implements OnInit {
       });
   }
 
-  openTasksList(iterationId: string) {
-    this.router.navigate(['dashboard/project/', this.projectId, 'iteration', iterationId]);
+  openTasksList(iteration: Iterations) {
+    this.iterationId = iteration._id;
+    this.iterationName = iteration.name;
+    this.startDateIter = new Date(iteration.startDate);
+    this.endDateIter = new Date(iteration.endDate);
+    this.isDate = true;
+    this.router.navigate(['dashboard/project/', this.projectId, 'iteration', this.iterationId]);
   }
 
-  showButton() {
+  addIterationModal() {
+    this.title = 'Add iteration';
+    this.isEdited = false;
     this.iterationModal = true;
+  }
+
+  editIterationModal(iteration: Iterations) {
+    this.title = 'Edit iteration';
+    this.isEdited = true;
+    this.iterationModal = true;
+  }
+
+  togleSidebar() {
+    this.sidebarOpened = this.sidebarOpened === false ? true : false;
   }
 
   modalWindowsConfirm(isConfirm: boolean) {

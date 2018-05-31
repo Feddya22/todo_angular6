@@ -7,9 +7,11 @@ import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } fro
   encapsulation: ViewEncapsulation.Emulated
 })
 export class AddIterationFormComponent implements OnInit {
+  @Input() isEdited: boolean;
+  @Input() title: string;
   @Input() name: string;
-  @Input() startDate: string;
-  @Input() endDate: string;
+  @Input() startDate: Date;
+  @Input() endDate: Date;
 
   @Output() isConfirm: EventEmitter<boolean> = new EventEmitter<boolean>();
 

@@ -7,7 +7,10 @@ var iterationSchema = mongo.Schema({
         type: Date,
         default: Date.now
     },
-    endDate: Date,
+    endDate: {
+        type: Date,
+        default: Date.now
+    },
     idProject: {
         type: mongo.Schema.Types.ObjectId,
         ref: 'Projects',
