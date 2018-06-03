@@ -60,7 +60,9 @@ iter.post('/', checkAuth, (req, res, next) => {
 
 iter.patch('/:iterationId', checkAuth, (req, res, next) => {
     var iteration = new Iterations({
-        name: req.body.name
+        name: req.body.name,
+        startDate: req.body.startDate,
+        endDate: req.body.endDate,
     });
     Iterations.findOneAndUpdate({_id: req.params.iterationId}, {$set: iteration}, {new: true})
         .exec()

@@ -1,41 +1,93 @@
 <div class="task_table">
-  <div class="task_column">
-    <div class="table_header">
-      Todo
+  <div *ngIf="toggleBacklog" class="task_column">
+    <mat-toolbar class="table_header">
+      Backlog
+    </mat-toolbar>
+    <div class="task_list">
+      <mat-card *ngFor="let task of backlog">
+        <div class="card_header">
+          <span>{{task.task}}</span>
+          <div class="task_header_menu">
+            <button mat-mini-fab color="white" [matMenuTriggerFor]="task_menu"><mat-icon>more_horiz</mat-icon></button>
+            <mat-menu #task_menu="matMenu">
+              <button mat-menu-item (click)="fromBackLog(task._id)" >From backlog</button>
+              <button mat-menu-item>Edit</button>
+              <button mat-menu-item (click)="deleteTask(task._id)" >Delete</button>
+            </mat-menu>
+          </div>
+        </div>
+        <mat-card-content>{{task.describe}}</mat-card-content>
+      </mat-card>
     </div>
+  </div>
+  <div *ngIf="!toggleBacklog" class="task_column">
+    <mat-toolbar class="table_header">
+      Todo
+    </mat-toolbar>
     <div class="task_list">
       <mat-card *ngFor="let task of todo">
-        <mat-card-header>
-            <mat-card-title>{{task.task}}</mat-card-title>
-        </mat-card-header>
+        <div class="card_header">
+          <span>{{task.task}}</span>
+          <div class="task_header_menu">
+            <button mat-mini-fab color="white" [matMenuTriggerFor]="task_menu"><mat-icon>more_horiz</mat-icon></button>
+            <mat-menu #task_menu="matMenu">
+              <button mat-menu-item (click)="toBacklog(task._id, 'todo')" >To backlog</button>
+              <button mat-menu-item>Edit</button>
+              <button mat-menu-item (click)="deleteTask(task._id)" >Delete</button>
+            </mat-menu>
+          </div>
+        </div>
         <mat-card-content>{{task.describe}}</mat-card-content>
       </mat-card>
     </div>
   </div>
-  <div class="task_column">
-    <div class="table_header">
+  <!-- Other column -->
+  <div *ngIf="!toggleBacklog" class="task_column">
+    <mat-toolbar class="table_header">
       Doing
-    </div>
+    </mat-toolbar>
     <div class="task_list">
       <mat-card *ngFor="let task of doing">
-        <mat-card-header>
-            <mat-card-title>{{task.task}}</mat-card-title>
-        </mat-card-header>
+        <div class="card_header">
+          <span>{{task.task}}</span>
+          <div class="task_header_menu">
+            <button mat-mini-fab color="white" [matMenuTriggerFor]="task_menu"><mat-icon>more_horiz</mat-icon></button>
+            <mat-menu #task_menu="matMenu">
+              <button mat-menu-item (click)="toBacklog(task._id, 'doing')" >To backlog</button>
+              <button mat-menu-item>Edit</button>
+              <button mat-menu-item (click)="deleteTask(task._id)" >Delete</button>
+            </mat-menu>
+          </div>
+        </div>
         <mat-card-content>{{task.describe}}</mat-card-content>
       </mat-card>
     </div>
   </div>
-  <div class="task_column">
-    <div class="table_header">
+  <div *ngIf="!toggleBacklog" class="task_column">
+    <mat-toolbar class="table_header">
       Done
-    </div>
+    </mat-toolbar>
     <div class="task_list">
       <mat-card *ngFor="let task of done">
-        <mat-card-header>
-            <mat-card-title>{{task.task}}</mat-card-title>
-        </mat-card-header>
+        <div class="card_header">
+          <span>{{task.task}}</span>
+          <div class="task_header_menu">
+            <button mat-mini-fab color="white" [matMenuTriggerFor]="task_menu"><mat-icon>more_horiz</mat-icon></button>
+            <mat-menu #task_menu="matMenu">
+              <button mat-menu-item (click)="toBacklog(task._id, 'done')" >To backlog</button>
+              <button mat-menu-item>Edit</button>
+              <button mat-menu-item (click)="deleteTask(task._id)" >Delete</button>
+            </mat-menu>
+          </div>
+        </div>
         <mat-card-content>{{task.describe}}</mat-card-content>
       </mat-card>
     </div>
   </div>
 </div>
+<app-add-task-form
+  *ngIf="modalAddTask"
+  [title]="title"
+  [isEdited]="isEdit"
+  (isConfirm)="modalAddTaskWindow($event)"
+></app-add-task-form>

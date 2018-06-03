@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthServices } from '../_shared/auth.service';
 import { Tasks } from '../_models/tasks.model';
 import { TaskService } from './task.service';
+import { ShareService } from '../_shared/share.service';
+import { Subscribable, Subscription } from 'rxjs';
+import { AddTaskFormComponent } from '../add-task-form/add-task-form.component';
 
 @Component({
   selector: 'app-tasks',
@@ -13,7 +16,7 @@ import { TaskService } from './task.service';
     AuthServices
   ]
 })
-export class TasksComponent implements OnInit {
+export class TasksComponent implements OnInit, OnDestroy {
 
   public projectId: string;
   public iterationId: string;
@@ -22,17 +25,34 @@ export class TasksComponent implements OnInit {
   private doing: Tasks[] = [];
   private done: Tasks[] = [];
   private backlog: Tasks[] = [];
-
-  public addTaskModal = false;
-  public backlogModal = false;
   private currentTask: Tasks;
+
+  public toggleBacklog: boolean;
+  public modalAddTask: boolean;
+  public subscriptionBacklog: Subscription;
+  public subscriptionAddTask: Subscription;
+
+  public title: string;
+  public isEdit: boolean;
+
+  @ViewChild(AddTaskFormComponent) addTaskForm;
 
   constructor(
     private tasksService: TaskService,
     private auth: AuthServices,
     private actRoute: ActivatedRoute,
+    private share: ShareService,
     private router: Router
-  ) {}
+  ) {
+    this.subscriptionBacklog = this.share.getStatus().subscribe(isToggle => {
+      this.toggleBacklog = isToggle;
+    });
+    this.subscriptionAddTask = this.share.getAddTaskStatus().subscribe(isAdd => {
+      this.modalAddTask = true;
+      this.title = 'Add task';
+      this.isEdit = false;
+    });
+  }
 
   ngOnInit() {
     this.actRoute.parent.params.subscribe((parentParams) => {
@@ -42,6 +62,10 @@ export class TasksComponent implements OnInit {
         this.getTasks();
       });
     });
+  }
+
+  ngOnDestroy() {
+    this.subscriptionBacklog.unsubscribe();
   }
 
   getTasks() {
@@ -72,8 +96,13 @@ export class TasksComponent implements OnInit {
     this.tasksService.addTask(taskName, description, status,
       points, this.auth.userId, this.projectId, this.iterationId)
       .subscribe(result => {
-        this.message = result;
-        this.ngOnInit();
+        if (status === 'todo') {
+          this.todo.push(result);
+        } else if (status === 'doing') {
+          this.doing.push(result);
+        } else {
+          this.done.push(result);
+        }
       });
   }
 
@@ -110,44 +139,75 @@ export class TasksComponent implements OnInit {
       });
   }
 
-  toBacklog(taskId: string) {
+  toBacklog(taskId: string, status: string) {
     const taskObj = {
       inBacklog: true
     };
     this.tasksService.editTask(taskId, taskObj)
       .subscribe(result  => {
-        console.log(result);
-        this.ngOnInit();
+        if (status === 'todo') {
+          this.todo.forEach((todo, i) => {
+            if (todo['_id'] === taskId) {
+              todo['inBacklog'] = true;
+              this.backlog.push(this.todo.splice(i, 1)[0]);
+            }
+          });
+        } else if (status === 'doing') {
+          this.doing.forEach((doing, i) => {
+            if (doing['_id'] === taskId) {
+              doing['inBacklog'] = true;
+              this.backlog.push(this.doing.splice(i, 1)[0]);
+            }
+          });
+        } else {
+          this.done.forEach((done, i) => {
+            if (done['_id'] === taskId) {
+              done['inBacklog'] = true;
+              this.backlog.push(this.done.splice(i, 1)[0]);
+            }
+          });
+        }
       });
   }
 
   fromBackLog(taskId: string) {
-    this.backlog.length = 0;
     const taskObj = {
       inBacklog: false
     };
     this.tasksService.editTask(taskId, taskObj)
       .subscribe(result  => {
-        console.log(result);
-        this.ngOnInit();
+        this.backlog.forEach((item, i) => {
+          if (item['_id'] === taskId) {
+            item['inBacklog'] = false;
+            if (item['status'] === 'todo') {
+              this.todo.push(this.backlog.splice(i, 1)[0]);
+            } else if (item['status'] === 'doing') {
+              this.doing.push(this.backlog.splice(i, 1)[0]);
+            } else {
+              this.done.push(this.backlog.splice(i, 1)[0]);
+            }
+          }
+        });
       });
   }
 
-  cancelAddTask() {
-    this.addTaskModal = false;
-  }
+  modalAddTaskWindow(isConfirm: boolean) {
+    this.modalAddTask = false;
+    if (isConfirm) {
+      console.log(this.addTaskForm.points);
+      if (!this.addTaskForm.isEdited) {
+        // this.addTask(
+        //   this.addTaskForm.taskName,
+        //   this.addTaskForm.description,
+        //   this.addTaskForm.status,
+        //   this.addTaskForm.points
+        // );
+      } else {
 
-  cancelBacklog() {
-    this.backlogModal = false;
-  }
-
-  showAddButton(task?: Tasks) {
-    this.currentTask = task;
-    this.addTaskModal = true;
-  }
-
-  showBacklog() {
-    this.backlogModal = true;
+      }
+    } else {
+      console.log('Cancel');
+    }
   }
 
 }

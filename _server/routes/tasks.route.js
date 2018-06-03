@@ -70,6 +70,7 @@ tasks.post('/addTask', checkAuth,(req, res, next) => {
         .then(data => {
             res.status(201).json({
                 message: 'Task was added successfully',
+                task: task
             });
         })
         .catch(err => {

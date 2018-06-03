@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { IterationService } from './iteration.service';
 import { AuthServices } from '../_shared/auth.service';
 import { AddIterationFormComponent } from '../add-iteration-form/add-iteration-form.component';
+import { ShareService } from '../_shared/share.service';
 
 @Component({
   selector: 'app-iterations',
@@ -32,12 +33,14 @@ export class IterationsComponent implements OnInit {
 
   public isEdited: boolean;
   public isDate: boolean;
+  public backlogToggle: boolean;
 
   @ViewChild(AddIterationFormComponent) iterationMW;
 
   constructor(
     private iterService: IterationService,
     private actRoute: ActivatedRoute,
+    private share: ShareService,
     private router: Router
   ) {}
 
@@ -55,13 +58,8 @@ export class IterationsComponent implements OnInit {
       }, error => this.messages = error);
   }
 
-  addIteration(name: string, startDate: Date, endDate: Date) {
-    const iteration = {
-      name: name,
-      startDate: startDate,
-      endDate: endDate,
-      idProject: this.projectId
-    };
+  addIteration(iteration: object) {
+    iteration['idProject'] = this.projectId;
     this.iterService.addIteration(iteration)
       .subscribe(
         result => this.iterations.push(result.addedIteration),
@@ -69,13 +67,22 @@ export class IterationsComponent implements OnInit {
       );
   }
 
-  // change incoming data
-  updateIteration(newIterationName: string) {
-    this.iterService.updateIteration(newIterationName, this.iterationId)
-      .subscribe(result => {
-        console.log(result);
-        this.iterationModal = false;
-      });
+  updateIteration(iteration: object) {
+    this.iterService.updateIteration(iteration, this.iterationId)
+      .subscribe(
+        result => {
+          this.iterations.forEach(item => {
+            if (item['_id'] === this.iterationId) {
+              item['name'] = iteration['name'];
+              item['startDate'] = iteration['startDate'];
+              item['endDate'] = iteration['endDate'];
+              this.startDateIter = iteration['startDate'];
+              this.endDateIter = iteration['endDate'];
+            }
+          });
+        },
+        error => console.log(error)
+      );
   }
 
   openTasksList(iteration: Iterations) {
@@ -85,6 +92,10 @@ export class IterationsComponent implements OnInit {
     this.endDateIter = new Date(iteration.endDate);
     this.isDate = true;
     this.router.navigate(['dashboard/project/', this.projectId, 'iteration', this.iterationId]);
+  }
+
+  addTask() {
+    this.share.sendAddTaskStatus(true);
   }
 
   addIterationModal() {
@@ -99,19 +110,27 @@ export class IterationsComponent implements OnInit {
     this.iterationModal = true;
   }
 
-  togleSidebar() {
+  toggleSidebar() {
     this.sidebarOpened = this.sidebarOpened === false ? true : false;
+  }
+
+  toggleBacklog() {
+    this.share.sendStatus(this.backlogToggle);
   }
 
   modalWindowsConfirm(isConfirm: boolean) {
     this.iterationModal = false;
+    const iterationObj = {
+      name: this.iterationMW.name,
+      startDate: this.iterationMW.startDateIter,
+      endDate: this.iterationMW.endDateIter
+    };
     if (isConfirm) {
-      this.addIteration(
-        this.iterationMW.nameIteration,
-        this.iterationMW.startDateIter,
-        this.iterationMW.endDateIter
-      );
-      console.log('saved');
+      if (this.iterationMW.isEdited) {
+        this.updateIteration(iterationObj);
+      } else {
+        this.addIteration(iterationObj);
+      }
     } else {
       console.log('discarced');
     }

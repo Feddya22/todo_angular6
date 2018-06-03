@@ -13,6 +13,9 @@ import { MatIconModule } from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatSelectModule} from '@angular/material/select';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -83,6 +86,9 @@ const routs: Routes = [
     MatNativeDateModule,
     MatFormFieldModule,
     MatDatepickerModule,
+    MatMenuModule,
+    MatSlideToggleModule,
+    MatSelectModule,
     FormsModule,
     HttpModule
   ],

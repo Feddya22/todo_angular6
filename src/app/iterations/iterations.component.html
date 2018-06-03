@@ -19,9 +19,11 @@
   <div class="iteration_main_content">
     <div class="buttons_block">
       <div class="left_side_buttons">
-          <button (click)="togleSidebar()" mat-raised-button><mat-icon class="button_icon_size">menu</mat-icon>Iterations</button>
-          <button mat-raised-button><mat-icon class="button_icon_size">add</mat-icon>Add task</button>
-          <button mat-raised-button>Backlog</button>
+          <button (click)="toggleSidebar()" mat-raised-button><mat-icon class="button_icon_size">menu</mat-icon>Iterations</button>
+          <button (click)="addTask()" mat-raised-button><mat-icon class="button_icon_size">add</mat-icon>Add task</button>
+          <div class="toggle_backlog_block">
+            <mat-slide-toggle [(ngModel)]="backlogToggle" (click)="toggleBacklog()" >Backlog</mat-slide-toggle>
+          </div>
       </div>
       <div *ngIf="isDate" class="information_about_iteration">
         <mat-icon class="button_icon_size date_icon">date_range</mat-icon>

@@ -47,7 +47,7 @@ export class TaskService {
       userId: string,
       projectId: string,
       iterationId: string
-  ): Observable<string> {
+  ): Observable<Tasks> {
       const options = this.returnHeaders('auth');
       const taskObj = {
           task: task,
@@ -65,8 +65,7 @@ export class TaskService {
               options
           ).pipe(
             map((response: Response) => {
-              console.log(response.json());
-              return response.json();
+              return response.json().task;
             })
           );
   }

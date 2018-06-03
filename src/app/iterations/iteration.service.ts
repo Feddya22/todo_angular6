@@ -49,11 +49,8 @@ export class IterationService {
         );
     }
 
-    updateIteration(name: string, iterationId: string) {
+    updateIteration(iteration: object, iterationId: string) {
       const options = this.returnHeaders('auth');
-      const iteration = {
-          name: name
-      };
       return this.http.patch(this.serverUrl + '/' + iterationId, JSON.stringify(iteration), options)
         .pipe(
           map((updateIterRes: Response) => {

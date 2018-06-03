@@ -1,3 +1,33 @@
-<p>
-  add-task-form works!
-</p>
+<div class="overlay">
+  <mat-card class="modal_task_window">
+    <h3>{{title}}</h3>
+    <form class="task_form">
+      <mat-form-field class="field_width">
+        <input [(ngModel)]="taskName" name="taskName" matInput placeholder="Task name">
+      </mat-form-field>
+      <mat-form-field class="field_width">
+        <textarea [(ngModel)]="description" name="description" matInput placeholder="Task description"></textarea>
+      </mat-form-field>
+      <div class="task_field_align">
+        <mat-form-field>
+          <mat-select [(ngModel)]="status" name="status" placeholder="Task status">
+            <mat-option *ngFor="let status of listOfStatus" [value]="status">
+              {{ status }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-select [(ngModel)]="points" name="points" placeholder="Task points">
+            <mat-option *ngFor="let point of taskPoints" [value]="points">
+              {{ point }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+    <div class="iteration_buttons">
+      <button mat-raised-button (click)="confirm()" >Save</button>
+      <button mat-raised-button (click)="close()" >Cancel</button>
+    </div>
+  </mat-card>
+</div>

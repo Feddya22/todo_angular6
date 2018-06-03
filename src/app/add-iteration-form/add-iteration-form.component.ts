@@ -1,4 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-add-iteration-form',
@@ -15,13 +17,18 @@ export class AddIterationFormComponent implements OnInit {
 
   @Output() isConfirm: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  nameIteration: string;
-  startDateIter: Date;
-  endDateIter: Date;
+  public startDateIter: any;
+  public endDateIter: any;
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
+    if (!this.isEdited) {
+      this.name = '';
+    } else {
+      this.startDateIter = new FormControl(this.startDate).value;
+      this.endDateIter = new FormControl(this.endDate).value;
+    }
   }
 
   confirm() {
