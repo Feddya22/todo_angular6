@@ -11,15 +11,23 @@
             <button mat-mini-fab color="white" [matMenuTriggerFor]="task_menu"><mat-icon>more_horiz</mat-icon></button>
             <mat-menu #task_menu="matMenu">
               <button mat-menu-item (click)="fromBackLog(task._id)" >From backlog</button>
-              <button mat-menu-item>Edit</button>
+              <button mat-menu-item (click)="editTaskModal(task)" >Edit</button>
               <button mat-menu-item (click)="deleteTask(task._id)" >Delete</button>
             </mat-menu>
           </div>
         </div>
         <mat-card-content>{{task.describe}}</mat-card-content>
+        <div class="task_addition_info">
+            <span class="story_points">story points: {{task.points}}</span>
+            <div class="change_status_buttons">
+              <span (click)="changeStatus(task._id, task.status, 'doing')" class="change_state orange">doing</span>
+              <span (click)="changeStatus(task._id, task.status, 'done')" class="change_state green">done</span>
+            </div>
+        </div>
       </mat-card>
     </div>
   </div>
+  <!-- Todo -->
   <div *ngIf="!toggleBacklog" class="task_column">
     <mat-toolbar class="table_header">
       Todo
@@ -32,12 +40,19 @@
             <button mat-mini-fab color="white" [matMenuTriggerFor]="task_menu"><mat-icon>more_horiz</mat-icon></button>
             <mat-menu #task_menu="matMenu">
               <button mat-menu-item (click)="toBacklog(task._id, 'todo')" >To backlog</button>
-              <button mat-menu-item>Edit</button>
+              <button mat-menu-item (click)="editTaskModal(task)" >Edit</button>
               <button mat-menu-item (click)="deleteTask(task._id)" >Delete</button>
             </mat-menu>
           </div>
         </div>
         <mat-card-content>{{task.describe}}</mat-card-content>
+        <div class="task_addition_info">
+            <span class="story_points">story points: {{task.points}}</span>
+            <div class="change_status_buttons">
+              <span (click)="changeStatus(task._id, task.status, 'doing')" class="change_state orange">doing</span>
+              <span (click)="changeStatus(task._id, task.status, 'done')" class="change_state green">done</span>
+            </div>
+        </div>
       </mat-card>
     </div>
   </div>
@@ -54,12 +69,19 @@
             <button mat-mini-fab color="white" [matMenuTriggerFor]="task_menu"><mat-icon>more_horiz</mat-icon></button>
             <mat-menu #task_menu="matMenu">
               <button mat-menu-item (click)="toBacklog(task._id, 'doing')" >To backlog</button>
-              <button mat-menu-item>Edit</button>
+              <button mat-menu-item (click)="editTaskModal(task)" >Edit</button>
               <button mat-menu-item (click)="deleteTask(task._id)" >Delete</button>
             </mat-menu>
           </div>
         </div>
         <mat-card-content>{{task.describe}}</mat-card-content>
+        <div class="task_addition_info">
+            <span class="story_points">story points: {{task.points}}</span>
+            <div class="change_status_buttons">
+              <span (click)="changeStatus(task._id, task.status, 'todo')" class="change_state red">todo</span>
+              <span (click)="changeStatus(task._id, task.status, 'done')" class="change_state green">done</span>
+            </div>
+        </div>
       </mat-card>
     </div>
   </div>
@@ -75,12 +97,19 @@
             <button mat-mini-fab color="white" [matMenuTriggerFor]="task_menu"><mat-icon>more_horiz</mat-icon></button>
             <mat-menu #task_menu="matMenu">
               <button mat-menu-item (click)="toBacklog(task._id, 'done')" >To backlog</button>
-              <button mat-menu-item>Edit</button>
+              <button mat-menu-item (click)="editTaskModal(task)" >Edit</button>
               <button mat-menu-item (click)="deleteTask(task._id)" >Delete</button>
             </mat-menu>
           </div>
         </div>
         <mat-card-content>{{task.describe}}</mat-card-content>
+        <div class="task_addition_info">
+            <span class="story_points">story points: {{task.points}}</span>
+            <div class="change_status_buttons">
+              <span (click)="changeStatus(task._id, task.status, 'todo')" class="change_state red">todo</span>
+              <span (click)="changeStatus(task._id, task.status, 'doing')" class="change_state orange">doing</span>
+            </div>
+        </div>
       </mat-card>
     </div>
   </div>
@@ -89,5 +118,9 @@
   *ngIf="modalAddTask"
   [title]="title"
   [isEdited]="isEdit"
+  [taskName]="taskName"
+  [description]="description"
+  [status]="status"
+  [points]="points"
   (isConfirm)="modalAddTaskWindow($event)"
 ></app-add-task-form>

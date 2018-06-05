@@ -20,6 +20,7 @@ export class TasksComponent implements OnInit, OnDestroy {
 
   public projectId: string;
   public iterationId: string;
+  public taskId: string;
   public message: string;
   private todo: Tasks[] = [];
   private doing: Tasks[] = [];
@@ -34,6 +35,10 @@ export class TasksComponent implements OnInit, OnDestroy {
 
   public title: string;
   public isEdit: boolean;
+  public taskName: string;
+  public description: string;
+  public status: string;
+  public points: number;
 
   @ViewChild(AddTaskFormComponent) addTaskForm;
 
@@ -66,6 +71,11 @@ export class TasksComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.subscriptionBacklog.unsubscribe();
+    this.todo.length = 0;
+    this.doing.length = 0;
+    this.done.length = 0;
+    this.backlog.length = 0;
+    console.log('Destroyed');
   }
 
   getTasks() {
@@ -91,7 +101,7 @@ export class TasksComponent implements OnInit, OnDestroy {
     taskName: string,
     description: string,
     status: string,
-    points: string
+    points: number
   ) {
     this.tasksService.addTask(taskName, description, status,
       points, this.auth.userId, this.projectId, this.iterationId)
@@ -114,6 +124,7 @@ export class TasksComponent implements OnInit, OnDestroy {
       });
   }
 
+  // Some little problem
   editTask(taskId: string, task: string, status: string, describe: string, points: number) {
     const taskObj = {
       task: task,
@@ -128,7 +139,7 @@ export class TasksComponent implements OnInit, OnDestroy {
       });
   }
 
-  changeStatus(taskId: string, status: string) {
+  changeStatus(taskId: string, from: string, status: string) {
     const taskObj = {
       status: status
     };
@@ -191,19 +202,35 @@ export class TasksComponent implements OnInit, OnDestroy {
       });
   }
 
+  editTaskModal(taskItem: Tasks) {
+    this.modalAddTask = true;
+    this.isEdit = true;
+    this.taskId = taskItem._id;
+    this.title = 'Edit task';
+    this.taskName = taskItem.task;
+    this.description = taskItem.describe;
+    this.status = taskItem.status;
+    this.points = taskItem.points;
+  }
+
   modalAddTaskWindow(isConfirm: boolean) {
     this.modalAddTask = false;
     if (isConfirm) {
-      console.log(this.addTaskForm.points);
       if (!this.addTaskForm.isEdited) {
-        // this.addTask(
-        //   this.addTaskForm.taskName,
-        //   this.addTaskForm.description,
-        //   this.addTaskForm.status,
-        //   this.addTaskForm.points
-        // );
+        this.addTask(
+          this.addTaskForm.taskName,
+          this.addTaskForm.description,
+          this.addTaskForm.status,
+          this.addTaskForm.points
+        );
       } else {
-
+        this.editTask(
+          this.taskId,
+          this.addTaskForm.taskName,
+          this.addTaskForm.status,
+          this.addTaskForm.description,
+          this.addTaskForm.points
+        );
       }
     } else {
       console.log('Cancel');

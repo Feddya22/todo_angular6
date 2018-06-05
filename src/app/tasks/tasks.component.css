@@ -22,3 +22,46 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.change_status_buttons {
+    display: flex;
+}
+
+.task_addition_info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.story_points {
+    background: #ccc;
+    padding: 4px 16px;
+    border-radius: 2px;
+    font-size: 12px;
+}
+
+.change_state {
+    border-radius: 2px;
+    padding: 4px 16px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+.change_state:first-child {
+    margin-left: 0;
+}
+
+.orange {
+    background: rgb(192, 138, 36);
+    color: white;
+}
+
+.green {
+    background: rgb(39, 145, 39);
+    color: white;
+}
+
+.red {
+    background: rgb(180, 56, 56);
+    color: white;
+}

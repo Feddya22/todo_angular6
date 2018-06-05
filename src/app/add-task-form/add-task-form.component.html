@@ -18,7 +18,7 @@
         </mat-form-field>
         <mat-form-field>
           <mat-select [(ngModel)]="points" name="points" placeholder="Task points">
-            <mat-option *ngFor="let point of taskPoints" [value]="points">
+            <mat-option *ngFor="let point of taskPoints" [value]="point">
               {{ point }}
             </mat-option>
           </mat-select>

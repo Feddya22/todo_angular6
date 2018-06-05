@@ -43,7 +43,7 @@ export class TaskService {
       task: string,
       description: string,
       status: string,
-      points: string,
+      points: number,
       userId: string,
       projectId: string,
       iterationId: string
